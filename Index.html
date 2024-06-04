@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSV to Array of Objects</title>
+<style>
+  .tooltip {
+    position: absolute;
+    text-align: center;
+    width: auto;
+    height: auto;
+    padding: 8px;
+    font: 12px sans-serif;
+    background: lightsteelblue;
+    border: 0px;
+    border-radius: 8px;
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  .tooltip1 {
+    position: absolute;
+    padding: 10px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    pointer-events: none;
+    opacity: 0;
+}
+
+  .bar {
+    fill: steelblue;
+}
+  .bar:hover {
+    fill: orange;
+}
+  .axis-label {
+    font-size: 14px;
+
+}
+
+.legend rect {
+  cursor: pointer;
+}
+
+.svg-container {
+  width: 800px;
+  height: 500px;
+  overflow: auto;  /* Enable scrolling */
+}
+
+/* WebKit Browsers */
+.svg-container::-webkit-scrollbar {
+  width: 12px;
+}
+
+.svg-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.svg-container::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 6px;
+  border: 3px solid #f1f1f1;
+}
+.svg-container::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+  /* Firefox */
+  .svg-container {
+    scrollbar-width: thin;
+    scrollbar-color: #888 #f1f1f1;
+}
+#chart1{
+  top: 50px; /* Top position */
+  left: 50px; /* Left position */
+
+}
+
+</style>
+<script src="https://d3js.org/d3.v6.min.js"></script> 
+<script src="File1.js"></script><!-- Ensure correct version of D3.js -->
+
+
+</head>
+<body>
+  <input type="file" onchange="handleFileSelect(event)">
+  <div id="chart"></div>
+  <div class="tooltip"></div>
+  <div id="chart1" class="svg-container"></div>
+  <div id="chart2" ></div>
+  <div id="chart3"></div>
+
+
+
+  
+
+
+
+
+</body>
+</html>
