@@ -1,4 +1,3 @@
- 
   function handleFileSelect(event) {
     const file = event.target.files[0];
     const reader = new FileReader();
@@ -36,9 +35,6 @@ dataArray.forEach(obj => {
 // Print all keys
 console.log(allKeys);
 
-     
-     
-
       const newData = dataArray.map(obj => ({
         ...obj,
         Rating: Number(obj.Rating),
@@ -60,8 +56,6 @@ console.log(allKeys);
         acc[Category].Price += Price;
         acc[Category].count++;
 
-
-
         return acc;
       }, {});
 
@@ -74,20 +68,9 @@ console.log(allKeys);
       averagesArray.push({ Category, SumOfInstall: SumOfInstall, AveragePrice: averagePrice });
 }
 
-   
-      
-
-
-
-      
-      
       const  array_groupedData_Category_Installs = Object.values(averagesArray).map(obj => Object.values(obj));
 
-
       console.log(array_groupedData_Category_Installs);
-
-      
-      
 
       const groupedData_ContentRating_Percent = dataArray.reduce((acc,obj) => {
         if (obj && obj.Content_Rating) { // Check if obj and Content_Rating exist
@@ -105,16 +88,6 @@ console.log(allKeys);
 
       const data = Object.entries(groupedData_ContentRating_Percent)
       console.log(data)
-
-
-     
-
-
-      
-
-
-
-
 
       const groupedData_App_Installs = newData.reduce((acc, obj) => {
         const { App, Installs } = obj;
@@ -135,7 +108,7 @@ console.log(allKeys);
       
       // Output the array of objects to the console
       // You can further process dataArray as needed here
-
+      //chart1
       // Category, Rating and Install chart
       const margin = { top: 20, right: 50, bottom: 50, left: 30 };
       const w = 1100 - margin.left - margin.right;
@@ -207,7 +180,6 @@ console.log(allKeys);
        .attr("y", d => yScale(d[1])) 
        .attr("width", 30)
        .attr("class", "bar")
-
        .attr("height", d => h - yScale(d[1]))
        .attr("fill", function(d , i) {
          return "rgb(0, 0, " + Math.round(255 / array_groupedData_Category_Installs.length) * i + ")";
@@ -262,7 +234,7 @@ console.log(allKeys);
       });
 
 
-        // Top10chart
+        // chart2
 
 
        const margin1 = { top: 20, right: 20, bottom: 50, left: 30 };
@@ -323,7 +295,7 @@ console.log(allKeys);
           tooltip.transition()
               .duration(200)
               .style("opacity", .9);
-          tooltip.html("Category: " + d[0] + "<br/>Installs: " + d[1])
+          tooltip.html("Application: " + d[0] + "<br/>Installs: " + d[1])
               .style("left", (event.pageX) + "px")
               .style("top", (event.pageY - 28) + "px")
         })
@@ -335,7 +307,7 @@ console.log(allKeys);
 
 
 
-
+        //chart3
         const w2 = 450;
         const h2 = 450;
         const margin2 = 40;
@@ -429,15 +401,125 @@ console.log(allKeys);
         .attr('x', legendRectSize + legendSpacing)
         .attr('y', legendRectSize - legendSpacing)
         .text(d => d);
-       
 
-       
-      
+
+
+
+        //chart4
+
+
+
+// Compute average rating for each category
+const groupedData_Category_AverageRating = newData.reduce((acc, obj) => {
+  const { Category, Rating } = obj;
+  if (!acc[Category]) {
+    acc[Category] = { Category: 0, Rating: 0, count: 0 };
+  }
+  acc[Category].Rating += Rating;
+  acc[Category].count++;
+
+  return acc;
+}, {});
+
+const avgArray = [];
+// Calculate average rating for each category
+for (const [Category] of Object.entries(groupedData_Category_AverageRating)) {
+  const averageRating = groupedData_Category_AverageRating[Category].Rating / groupedData_Category_AverageRating[Category].count;
+  avgArray.push({Category, AverageRating: averageRating});
+}
+
+// Convert the avgArray into an array of key-value pairs
+const averageRatingArray = Object.entries(avgArray);
+
+// // Sort the array by average rating in descending order
+// averageRatingArray.sort((a, b) => b[1].AverageRating - a[1].AverageRating);
+
+
+// // Take top 10 entries
+// const top10Entries4 = averageRatingArray.slice(0, 10);
+
+// Define SVG dimensions and margins
+const margin4 = { top: 50, right: 10, bottom: 60, left: 150 };
+const w4 = 600 - margin4.left - margin4.right;
+const h4 = 800 - margin4.top - margin4.bottom;
+
+// Create SVG element
+const svg4 = d3.select("#chart4")
+  .append("svg")
+  .attr("width", w4 + margin4.left + margin4.right)
+  .attr("height", h4 + margin4.top + margin4.bottom)
+  .attr("class", "bar")
+  .append("g")
+  .attr("transform", "translate(" + margin4.left + "," + margin4.top + ")");
+
+// Define scales
+const yScale4 = d3.scaleBand()
+  .domain(averageRatingArray.map(d => d[1].Category))
+  .range([h4, 0])
+  .padding(0.1);
+
+const xScale4 = d3.scaleLinear()
+  .domain([3.9, 4.5])
+  .range([0, w4]);
+
+// // Define axes
+// const yAxis4 = d3.axisLeft().scale(yScale4);
+// const xAxis4 = d3.axisBottom().scale(xScale4);
+
+// Define axes
+svg4.append("g")
+.attr("transform", "translate(0," + h4 + ")")
+.call(d3.axisBottom(xScale4).ticks(5).tickFormat(d3.format(".3s")))
+.append("text")
+.attr("x", w4 / 2)
+.attr("y", 20)
+.attr("dy", "0.71em")
+.attr("fill", "#000")
+.style("font-size", "12px")
+.text("Average Rating");
+
+svg4.append("g")
+    .call(d3.axisLeft(yScale4));
+
+// Add chart title
+svg4.append("text")
+.attr("x", (w4 / 2))
+.attr("y", 0 - (margin4.top / 2))
+.attr("text-anchor", "middle")
+.style("font-size", "20px")
+.style("font-weight", "bold")
+.style("fill","black")
+.text("Average Rating of each Category");
+
+// Create bars
+const rect4 = svg4.selectAll("rect")
+  .data(averageRatingArray)
+  .enter()
+  .append("rect")
+  .attr("x", 0)
+  .attr("y", (d, i) => yScale4(d[1].Category))
+  .attr("width", d => xScale4(d[1].AverageRating) - 30)
+  .attr("height", yScale4.bandwidth())
+  .attr("class", "bar")
+  .attr("fill", function(d, i) {
+    return "rgb(0, 0, " + Math.round(255 / averageRatingArray.length) * i + ")";
+  })
+  .on("mouseover", function(event, d) {
+    tooltip.transition()
+      .duration(200)
+      .style("opacity", .9);
+    tooltip.html("Category: " + d[1].Category + "<br/>Average Rating: " + d[1].AverageRating.toFixed(2))
+      .style("left", (event.pageX) + "px")
+      .style("top", (event.pageY - 28) + "px")
+  })
+  .on("mouseout", function(d) {
+    tooltip.transition()
+      .duration(500)
+      .style("opacity", 0);
+  });
+
 
 
     };
-
-
-
     reader.readAsText(file);
   }

@@ -30,10 +30,16 @@
 }
 
   .bar {
-    fill: steelblue;
+    fill: rgb(88, 180, 255);
 }
-  .bar:hover {
-    fill: orange;
+rect:hover {
+  fill: rgb(30, 0, 255);
+}
+rect {
+  -moz-transition: all 0.25s;
+  -o-transition: all 0.25s;
+  -webkit-transition: all 0.25s;
+  transition: all 0.25s;
 }
   .axis-label {
     font-size: 14px;
@@ -80,7 +86,7 @@
 
 </style>
 <script src="https://d3js.org/d3.v6.min.js"></script> 
-<script src="File1.js"></script><!-- Ensure correct version of D3.js -->
+<script src="File1.js"></script>
 
 
 </head>
@@ -91,7 +97,7 @@
   <div id="chart1" class="svg-container"></div>
   <div id="chart2" ></div>
   <div id="chart3"></div>
-
+  <div id="chart4"></div>
 
 
   
