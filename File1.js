@@ -492,7 +492,7 @@ svg4.append("text")
 .text("Average Rating of each Category");
 
 // Create bars
-const rect4 = svg4.selectAll("rect")
+svg4.selectAll("rect")
   .data(averageRatingArray)
   .enter()
   .append("rect")
@@ -517,6 +517,136 @@ const rect4 = svg4.selectAll("rect")
       .duration(500)
       .style("opacity", 0);
   });
+
+
+
+
+
+
+
+//chart 5
+
+
+
+
+const groupedData_Rating_Installs = newData.reduce((acc, obj) => {
+  const { Rating, Installs } = obj;
+  if (!acc[Rating]) {
+    acc[Rating] = { Rating, Installs: 0 };
+  }
+  acc[Rating].Installs += Installs;
+
+  return acc;
+}, {});
+
+console.log(groupedData_Rating_Installs);
+
+// Convert the object into an array of key-value pairs and sort it by Rating
+let ratingInstalls = Object.entries(groupedData_Rating_Installs)
+  .map(([rating, data]) => [parseFloat(rating), data.Installs])
+  .sort((a, b) => a[0] - b[0]);
+
+const margin5 = { top: 50, right: 150, bottom: 60, left: 100 };
+const w5 = 800 - margin5.left - margin5.right;
+const h5 = 800 - margin5.top - margin5.bottom;
+
+const svg5 = d3.select("#chart5")
+  .append("svg")
+  .attr("width", w5 + margin5.left + margin5.right)
+  .attr("height", h5 + margin5.top + margin5.bottom)
+  .append("g")
+  .attr("transform", "translate(" + margin5.left + "," + margin5.top + ")");
+
+const xScale5 = d3.scaleLinear()
+  .domain([1, 5])
+  .range([0, w5]);
+svg5.append("g")
+  .attr("transform", "translate(0," + h5 + ")")
+  .call(d3.axisBottom(xScale5));
+
+const yScale5 = d3.scaleLinear()
+  .domain([0, d3.max(ratingInstalls, d => d[1])])
+  .range([h5, 0]);
+svg5.append("g")
+  .call(d3.axisLeft(yScale5));
+
+// This allows to find the closest X index of the mouse:
+const bisect = d3.bisector(function(d) { return d[0]; }).left;
+
+// Create the circle that travels along the curve of chart
+const focus = svg5
+  .append('g')
+  .append('circle')
+  .style("fill", "none")
+  .attr("stroke", "black")
+  .attr('r', 8.5)
+  .style("opacity", 0);
+
+// Create the text that travels along the curve of chart
+const focusText = svg5
+  .append('g')
+  .append('text')
+  .style("opacity", 0)
+  .attr("text-anchor", "left")
+  .attr("alignment-baseline", "middle");
+
+// Add the line
+svg5
+  .append("path")
+  .datum(ratingInstalls)
+  .attr("fill", "none")
+  .attr("stroke", "steelblue")
+  .attr("stroke-width", 1.5)
+  .attr("d", d3.line()
+    .x(function(d) { return xScale5(d[0]); })
+    .y(function(d) { return yScale5(d[1]); })
+  );
+
+// Create a rect on top of the svg area: this rectangle recovers mouse position
+svg5
+  .append('rect')
+  .style("fill", "none")
+  .style("pointer-events", "all")
+  .attr('width', w5)
+  .attr('height', h5)
+  .on('mouseover', mouseover)
+  .on('mousemove', mousemove)
+  .on('mouseout', mouseout);
+
+function mouseover() {
+  focus.style("opacity", 1);
+  focusText.style("opacity", 1);
+}
+
+function mousemove(event) {
+  // recover coordinate we need
+  const x0 = xScale5.invert(d3.pointer(event)[0]);
+  const i = bisect(ratingInstalls, x0, 1);
+  const selectedData = ratingInstalls[i];
+  focus
+    .attr("cx", xScale5(selectedData[0]))
+    .attr("cy", yScale5(selectedData[1]));
+  focusText
+    .html(null)
+    .attr("x", xScale5(selectedData[0]) + 15)
+    .attr("y", yScale5(selectedData[1]))
+    .append('tspan')
+      .attr('x', xScale5(selectedData[0]) + 15)
+      .attr('dy', '1.2em')
+      .text("Rating: " + selectedData[0])
+    .append('tspan')
+      .attr('x', xScale5(selectedData[0]) + 15)
+      .attr('dy', '1.2em')
+      .text("Installs: " + selectedData[1]);
+}
+
+function mouseout() {
+  focus.style("opacity", 0);
+  focusText.style("opacity", 0);
+}
+
+
+
 
 
 
