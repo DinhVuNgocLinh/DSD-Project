@@ -123,10 +123,10 @@ console.log(allKeys);
       var svg = d3.select("#chart1")
       .append("svg")
       .attr("width", w + margin.left + margin.right)
-      .attr("height", h  + margin.top + margin.bottom)
+      .attr("height", h + margin.top + margin.bottom)
       .attr("class", "bar")
       .append("g")
-      .attr("transform", "translate(80, 20)");
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
       const yScale = d3.scaleLinear()
       .domain([0, d3.max(array_groupedData_Category_Installs.map(innerArray => innerArray[1]))])  // Input domain
@@ -232,23 +232,32 @@ console.log(allKeys);
           // Hide tooltip on mouseout
           d3.select(".tooltip").style("opacity", 0);
       });
+      // //Title
+      // svg.append("text")
+      // .attr("x", (w / 2))
+      // .attr("y", 0 - (margin.top / 9))
+      // .attr("text-anchor", "middle")
+      // .style("font-size", "20px")
+      // .style("font-weight", "bold")
+      // .style("fill","black")
+      // .text("Title of this chart");
 
 
         // chart2
 
 
-       const margin1 = { top: 20, right: 20, bottom: 50, left: 30 };
-       const w1 = 500 - margin1.left - margin1.right;
-       const h1 = 500 - margin1.top - margin1.bottom;
+       const margin1 = { top: 150, right: 50, bottom: 60, left: 160 };
+       const w1 = 600 - margin1.left - margin1.right;
+       const h1 = 634 - margin1.top - margin1.bottom;
 
 
        var svg1 = d3.select("#chart2")
-      .append("svg")
-      .attr("width", w1 + margin1.left + margin1.right)
-      .attr("height", h1  + margin1.top + margin1.bottom)
-      .attr("class", "bar")
-      .append("g")
-      .attr("transform", "translate(100, 20)");
+       .append("svg")
+       .attr("width", w1 + margin1.left + margin1.right)
+       .attr("height", h1 + margin1.top + margin1.bottom)
+       .attr("class", "bar")
+       .append("g")
+       .attr("transform", "translate(" + margin1.left + "," + margin1.top + ")");
 
       
       
@@ -304,7 +313,15 @@ console.log(allKeys);
               .duration(500)
               .style("opacity", 0);
         });
-
+        //title
+        svg1.append("text")
+        .attr("x", (w1 / 2))
+        .attr("y", 0 - (margin1.top / 9))
+        .attr("text-anchor", "middle")
+        .style("font-size", "20px")
+        .style("font-weight", "bold")
+        .style("fill","black")
+        .text("Title of this chart");
 
 
         //chart3
@@ -313,44 +330,40 @@ console.log(allKeys);
         const margin2 = 40;
         const legendRectSize = 18;
         const legendSpacing = 4;
-
+        
         const radius = Math.min(w2, h2) / 2 - margin2;
-
-
+        
         const svg2 = d3.select("#chart3")
             .append("svg")
             .attr("width", w2 + 200)
-            .attr("height", h2)
+            .attr("height", h2 + margin2 * 2) // Increase the height to accommodate the title
             .append("g")
-            .attr("transform", `translate(${w2 / 2}, ${h2 / 2})`);
-           
-
-
-            const color = d3.scaleOrdinal()
+            .attr("transform", `translate(${w2 / 2}, ${(h2 / 2) + margin2})`); // Move the chart down to make space for the title
+        
+        // Add the title
+        svg2.append("text")
+            .attr("x", 0) // Center the title horizontally
+            .attr("y", -h2 / 2 - margin2 / 9) // Position the title above the chart
+            .attr("text-anchor", "middle")
+            .style("font-size", "20px")
+            .style("font-weight", "bold")
+            .text("Content Rating Distribution");
+        
+        const color = d3.scaleOrdinal()
             .domain(data.map(d => d[0]))
             .range(d3.schemeCategory10);
-
+        
         // Compute the position of each group on the pie
         const pie = d3.pie()
             .value(d => d[1]);
-
+        
         // Generate the arcs
         const arc = d3.arc()
             .innerRadius(0)
             .outerRadius(radius);
-
-
-            const arcs = svg2.selectAll('path')
-            .data(pie(data))
-            .join('path')
-            .attr('d', arc)
-            .attr('fill', d => color(d.data[0]))
-            .attr('stroke', 'white')
-            .style('stroke-width', '2px');
-
-
+        
         // Append the arcs to the SVG
-        svg2.selectAll('path')
+        const arcs = svg2.selectAll('path')
             .data(pie(data))
             .join('path')
             .attr('d', arc)
@@ -358,50 +371,63 @@ console.log(allKeys);
             .attr('stroke', 'white')
             .style('stroke-width', '2px')
             .on('mouseover', function(event, d) {
-              tooltip.transition()
-                  .duration(200)
-                  .style('opacity', .9);
-              tooltip.html(`Category: ${d.data[0]}<br>Value: ${d.data[1]}`)
-                  .style('left', (event.pageX + 5) + 'px')
-                  .style('top', (event.pageY - 28) + 'px');
-          })
-          .on('mouseout', function() {
-              tooltip.transition()
-                  .duration(500)
-                  .style('opacity', 0);
-          });
-
-
+                tooltip.transition()
+                    .duration(200)
+                    .style('opacity', .9);
+                tooltip.html(`Content rating: ${d.data[0]}<br>Number of applications: ${d.data[1]}`)
+                    .style('left', (event.pageX + 5) + 'px')
+                    .style('top', (event.pageY - 28) + 'px');
+        
+                // Highlight selected arc and make others gray
+                arcs.attr('fill', arcData => (arcData.data[0] === d.data[0]) ? color(arcData.data[0]) : 'gray');
+            })
+            .on('mouseout', function() {
+                tooltip.transition()
+                    .duration(500)
+                    .style('opacity', 0);
+        
+                // Restore original colors on mouseout
+                arcs.attr('fill', arcData => color(arcData.data[0]));
+            });
+        
         // Add labels
         const legend = svg2.selectAll('.legend')
-        .data(color.domain())
-        .enter()
-        .append('g')
-        .attr('class', 'legend')
-        .attr('transform', (d, i) => `translate(${w2 / 2 + 50}, ${-h2 / 2 + i * (legendRectSize + legendSpacing)})`)
-        .on('click', function(event, d) {
-            const isSelected = d3.select(this).classed('selected');
-            arcs.each(function(arcData) {
-                if (arcData.data[0] === d) {
-                    d3.select(this)
-                        .attr('fill', isSelected ? color(arcData.data[0]) : 'gray');
-                }
+            .data(color.domain())
+            .enter()
+            .append('g')
+            .attr('class', 'legend')
+            .attr('transform', (d, i) => `translate(${w2 / 2 + 50}, ${-h2 / 2 + i * (legendRectSize + legendSpacing)})`)
+            .on('click', function(event, d) {
+                const isSelected = d3.select(this).classed('selected');
+        
+                // Toggle selected state of legend item
+                svg2.selectAll('.legend').classed('selected', false);
+                d3.select(this).classed('selected', !isSelected);
+        
+                // Grey out all slices except the selected one
+                arcs.attr('fill', arcData => (arcData.data[0] === d) ? color(d) : 'gray');
+        
+                // Update tooltip with number of applications for the selected content rating
+                const selectedData = data.find(item => item[0] === d);
+                tooltip.transition()
+                    .duration(200)
+                    .style('opacity', .9);
+                tooltip.html(`Content rating: ${d}<br>Number of applications: ${selectedData[1]}`)
+                    .style('left', (event.pageX + 5) + 'px')
+                    .style('top', (event.pageY - 28) + 'px');
             });
-            d3.select(this).classed('selected', !isSelected);
-        });
-
-
+        
         legend.append('rect')
-        .attr('width', legendRectSize)
-        .attr('height', legendRectSize)
-        .attr('fill', color)
-        .attr('stroke', color);
-
-       legend.append('text')
-        .attr('x', legendRectSize + legendSpacing)
-        .attr('y', legendRectSize - legendSpacing)
-        .text(d => d);
-
+            .attr('width', legendRectSize)
+            .attr('height', legendRectSize)
+            .attr('fill', color)
+            .attr('stroke', color);
+        
+        legend.append('text')
+            .attr('x', legendRectSize + legendSpacing)
+            .attr('y', legendRectSize - legendSpacing)
+            .text(d => d);
+        
 
 
 
@@ -439,7 +465,7 @@ const averageRatingArray = Object.entries(avgArray);
 // const top10Entries4 = averageRatingArray.slice(0, 10);
 
 // Define SVG dimensions and margins
-const margin4 = { top: 50, right: 10, bottom: 60, left: 150 };
+const margin4 = { top: 150, right: 10, bottom: 60, left: 150 };
 const w4 = 600 - margin4.left - margin4.right;
 const h4 = 800 - margin4.top - margin4.bottom;
 
@@ -484,7 +510,7 @@ svg4.append("g")
 // Add chart title
 svg4.append("text")
 .attr("x", (w4 / 2))
-.attr("y", 0 - (margin4.top / 2))
+.attr("y", 0 - (margin4.top / 9))
 .attr("text-anchor", "middle")
 .style("font-size", "20px")
 .style("font-weight", "bold")
@@ -546,7 +572,7 @@ let ratingInstalls = Object.entries(groupedData_Rating_Installs)
   .map(([rating, data]) => [parseFloat(rating), data.Installs])
   .sort((a, b) => a[0] - b[0]);
 
-const margin5 = { top: 50, right: 150, bottom: 60, left: 100 };
+const margin5 = { top: 150, right: 150, bottom: 60, left: 100 };
 const w5 = 800 - margin5.left - margin5.right;
 const h5 = 800 - margin5.top - margin5.bottom;
 
@@ -579,7 +605,7 @@ const focus = svg5
   .append('circle')
   .style("fill", "none")
   .attr("stroke", "black")
-  .attr('r', 8.5)
+  .attr('r', 6)
   .style("opacity", 0);
 
 // Create the text that travels along the curve of chart
@@ -596,11 +622,20 @@ svg5
   .datum(ratingInstalls)
   .attr("fill", "none")
   .attr("stroke", "steelblue")
-  .attr("stroke-width", 1.5)
+  .attr("stroke-width", 2)
   .attr("d", d3.line()
     .x(function(d) { return xScale5(d[0]); })
     .y(function(d) { return yScale5(d[1]); })
   );
+  //Title
+  svg5.append("text")
+  .attr("x", (w5 / 2))
+  .attr("y", 0 - (margin5.top / 9))
+  .attr("text-anchor", "middle")
+  .style("font-size", "20px")
+  .style("font-weight", "bold")
+  .style("fill","black")
+  .text("Title of this chart");
 
 // Create a rect on top of the svg area: this rectangle recovers mouse position
 svg5
@@ -645,6 +680,26 @@ function mouseout() {
   focusText.style("opacity", 0);
 }
 
+
+
+
+
+//chart6
+
+
+
+
+
+// const margin6 = { top: 50, right: 150, bottom: 60, left: 100 };
+// const w6 = 800 - margin6.left - margin6.right;
+// const h6 = 800 - margin6.top - margin6.bottom;
+
+// const svg6 = d3.select("#chart6")
+//   .append("svg")
+//   .attr("width", w6 + margin6.left + margin6.right)
+//   .attr("height", h6 + margin6.top + margin6.bottom)
+//   .append("g")
+//   .attr("transform", "translate(" + margin6.left + "," + margin6.top + ")");
 
 
 

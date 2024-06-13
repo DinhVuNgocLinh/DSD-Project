@@ -12,7 +12,7 @@
     height: auto;
     padding: 8px;
     font: 12px sans-serif;
-    background: lightsteelblue;
+    background: rgb(158, 178, 204);
     border: 0px;
     border-radius: 8px;
     pointer-events: none;
@@ -71,18 +71,28 @@ rect {
   border: 3px solid #f1f1f1;
 }
 .svg-container::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  background: #a09d9d;
 }
   /* Firefox */
   .svg-container {
     scrollbar-width: thin;
-    scrollbar-color: #888 #f1f1f1;
+    scrollbar-color: #a09d9d #f1f1f1;
 }
 #chart1{
   top: 50px; /* Top position */
   left: 50px; /* Left position */
 
 }
+
+.bubbles {
+  stroke-width: 1px;
+  stroke: black;
+  opacity: .8
+}
+.bubbles:hover {
+  stroke: black;
+}
+
 
 </style>
 <script src="https://d3js.org/d3.v6.min.js"></script> 
@@ -99,8 +109,7 @@ rect {
   <div id="chart3"></div>
   <div id="chart4"></div>
   <div id="chart5"></div>
-
-  
+  <!-- <div id="chart6"></div> -->
 
 
 
