@@ -72,6 +72,27 @@ console.log(allKeys);
 
       console.log(array_groupedData_Category_Installs);
 
+
+      function SumOfthefirstValue(array){
+        return array
+        .map(subArray => subArray[1])
+        .reduce((acc,value) => acc + value, 0)
+
+      }
+      function SumOfthesecondValue(array){
+        return array
+        .map(subArray => subArray[2])
+        .reduce((acc,value) => acc + value, 0)
+
+      }
+
+      const AllInstall = SumOfthefirstValue(array_groupedData_Category_Installs)    
+      console.log(AllInstall)
+       
+      const AllAvgPrice = SumOfthesecondValue(array_groupedData_Category_Installs)/ array_groupedData_Category_Installs.length;
+
+
+
       const groupedData_ContentRating_Percent = dataArray.reduce((acc,obj) => {
         if (obj && obj.Content_Rating) { // Check if obj and Content_Rating exist
           if (!acc[obj.Content_Rating]) {
@@ -241,6 +262,13 @@ console.log(allKeys);
       // .style("font-weight", "bold")
       // .style("fill","black")
       // .text("Title of this chart");
+
+
+      document.getElementById("block1").innerHTML = `Summ of the Install: ${AllInstall}`;
+      document.getElementById("block2").innerHTML = `Average of the Price: ${AllAvgPrice}`;
+
+
+
 
 
         // chart2
