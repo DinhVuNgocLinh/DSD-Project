@@ -95,8 +95,19 @@ rect {
 
 #container1{
   width: 300px;
-  height: 300px;
+  height: 50px;
   background-color: bisque;
+}
+
+#container2{
+  width: 300px;
+  height: 50px;
+  background-color:beige;
+}
+
+#highlight{
+  background-color: rgb(88, 180, 255); 
+  top: 10px
 }
 
 
@@ -109,7 +120,23 @@ rect {
 
 </head>
 <body>
+  <div id ="highlight">
+    <h1> 
+      Google Play Application Dashbroad 
+    </h1>
+  </div>
+ 
+
+
   <input type="file" onchange="handleFileSelect(event)">
+  <div id = "container1"> 
+    <div id="block1" style="font-size: 24px;"></div>
+
+</div>
+<div id ="container2"> 
+  <div id="block2" style="font-size: 24px;"></div>
+
+</div>
   <div id="chart"></div>
   <div class="tooltip"></div>
   <div id="chart1" class="svg-container"></div>
@@ -117,15 +144,7 @@ rect {
   <div id="chart3"></div>
   <div id="chart4"></div>
   <div id="chart5"></div>
-  <div id = "container1"> 
-      <div id="block1" style="font-size: 24px;"></div>
-
-  </div>
-  <div id ="container2"> 
-    <div id="block2" style="font-size: 24px;"></div>
-
-  </div>
- 
+  
 
 
 
