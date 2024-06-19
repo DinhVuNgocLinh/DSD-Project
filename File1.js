@@ -35,15 +35,14 @@ dataArray.forEach(obj => {
 // Print all keys
 console.log(allKeys);
 
-      const newData = dataArray.map(obj => ({
-        ...obj,
-        Rating: Number(obj.Rating),
-        Reviews: Number(obj.Reviews),
-        Installs: Number(obj.Installs),
-        Price: Number(obj.Price),
-        Content_Rating: obj.Content_Rating
-
-      }));
+const newData = dataArray.map(obj => ({
+  ...obj,
+  Rating: Number(obj.Rating),
+  Reviews: Number(obj.Reviews),
+  Installs: Number(obj.Installs.replace(/,/g, '')),
+  Price: Number(obj.Price.replace('$', '')),
+  Content_Rating: obj.Content_Rating
+}));
 
       console.log(newData)
 
@@ -712,22 +711,298 @@ function mouseout() {
 
 
 
+
 //chart6
 
 
 
 
+const groupedData = newData.reduce((acc, obj) => {
+  const { Category, App, Rating, Installs, Price } = obj;
+  if (!acc[Category]) {
+    acc[Category] = [];
+  }
+  acc[Category].push({ Category, App, Rating, Installs, Price });
+  return acc;
+}, {});
 
-// const margin6 = { top: 50, right: 150, bottom: 60, left: 100 };
-// const w6 = 800 - margin6.left - margin6.right;
-// const h6 = 800 - margin6.top - margin6.bottom;
+const Chart6_Array = Object.values(groupedData).flat();
 
-// const svg6 = d3.select("#chart6")
-//   .append("svg")
-//   .attr("width", w6 + margin6.left + margin6.right)
-//   .attr("height", h6 + margin6.top + margin6.bottom)
-//   .append("g")
-//   .attr("transform", "translate(" + margin6.left + "," + margin6.top + ")");
+
+
+const margin6 = { top: 50, right: 300, bottom: 60, left: 130 };
+const w6 = 1000 - margin6.left - margin6.right;
+const h6 = 800 - margin6.top - margin6.bottom;
+
+const svg6 = d3.select("#chart6")
+  .append("svg")
+  .attr("width", w6 + margin6.left + margin6.right)
+  .attr("height", h6 + margin6.top + margin6.bottom)
+  .append("g")
+  .attr("transform", `translate(${margin6.left},${margin6.top})`);
+
+  // Add X axis
+  const xScale6 = d3.scaleLinear()
+  .domain([0, d3.max(Chart6_Array, d => d.Price)])
+  .range([0, w6]);
+  svg6.append("g")
+  .attr("transform", `translate(0, ${h6})`)
+  .call(d3.axisBottom(xScale6).ticks(3));
+    // Add X axis label:
+  svg6.append("text")
+  .attr("text-anchor", "end")
+  .attr("x", w6)
+  .attr("y", h6+50)
+  .text("Price");
+  // Add Y axis
+const yScale6 = d3.scaleLinear()
+  .domain([1, d3.max(Chart6_Array, d => d.Rating)])
+  .range([h6, 0]);
+  svg6.append("g")
+  .call(d3.axisLeft(yScale6));
+    // Add Y axis label:
+    svg6.append("text")
+    .attr("text-anchor", "end")
+    .attr("x", 0)
+    .attr("y", -20 )
+    .text("Rating")
+    .attr("text-anchor", "start");
+
+const z = d3.scaleSqrt()
+  .domain([0, d3.max(Chart6_Array, d => d.Installs)])
+  .range([2, 30]);
+
+// Combining different d3 color schemes to create a larger palette
+const customColorPalette = [
+  "#fbb4ae", "#f3381f", "#f765eb", "#7165f7", "#e2f31c", "#1ce2f3", "#f31c76",
+  "#f32e1c", "#2e1cf3", "#b9700a", "#120301", "#895406", "#068954", "#5a5a00", "#a65628",
+  "#f781bf", "#8c8c8c", "#66c2a5", "#fb5617", "#5874b3", "#da4ba2", "#317105", "#935fd0",
+  "#5a268e", "#523416", "#87deb3", "#e2f625", "#6ef9c1", "#1010f0", "#f625e2", "#f0d347",
+  "#1234d9", "#ec5e19", "#19a7ec", "#711109", "#25f225", "#5d5a57"
+];
+
+const myColor = d3.scaleOrdinal()
+  .domain(Chart6_Array.map(d => d.Category))
+  .range(customColorPalette);
+
+
+  // -1- Create a tooltip div that is hidden by default:
+  const tooltip6 = d3.select("#chart6")
+  .append("div")
+  .style("opacity", 0)
+  .attr("class", "tooltip")
+  .style("background-color", "black")
+  .style("border-radius", "5px")
+  .style("padding", "10px")
+  .style("color", "white");
+
+
+
+
+  // -2- Create 3 functions to show / update (when mouse move but stay on same circle) / hide the tooltip
+  const showTooltip = function(event, d) {
+    tooltip6.transition().duration(200);
+    tooltip6.style("opacity", 1)
+      .html(`App: ${d.App}<br>Category: ${d.Category}<br>Installs: ${d.Installs}<br>Price: ${d.Price}<br>Rating: ${d.Rating}`)
+      .style("left", (event.pageX + 10) + "px")
+      .style("top", (event.pageY - 10) + "px");
+
+  };
+
+  const moveTooltip = function(event, d) {
+    tooltip6.style("left", (event.pageX + 10) + "px")
+    .style("top", (event.pageY - 10) + "px");    
+  };
+
+  const hideTooltip = function(event, d) {
+    tooltip6.transition().duration(200).style("opacity", 0);
+  };
+
+  // What to do when one group is hovered
+  const highlight = function(event, d){
+    // reduce opacity of all groups
+    d3.selectAll(".bubbles").style("opacity", 0.009);
+    // expect the one that is hovered
+    d3.selectAll("."+d).style("opacity", 1);
+  }
+  // And when it is not hovered anymore
+  const noHighlight = function(event, d){
+    d3.selectAll(".bubbles").style("opacity", 1);
+  }
+
+
+
+  // Add dots
+svg6.append('g')
+  .selectAll("dot")
+  .data(Chart6_Array)
+  .join("circle")
+    .attr("class", function(d) { return "bubbles " + d.Category; })
+    .attr("cx", d => xScale6(d.Price))
+    .attr("cy", d => yScale6(d.Rating))
+    .attr("r", d => z(d.Installs))
+    .style("fill", d => myColor(d.Category))
+    .on("mouseover", showTooltip)
+    .on("mousemove", moveTooltip)
+    .on("mouseleave", hideTooltip);
+
+    // Add legend: circles
+const valuesToShow = [1000,100000000, 500000000, 1000000000];
+const xCircle = 650;
+const xLabel = 540;
+
+svg6.selectAll(".legendCircles")
+  .data(valuesToShow)
+  .enter()
+  .append("circle")
+    .attr("class", "legendCircles")
+    .attr("cx", xCircle)
+    .attr("cy", d => h6 - 100 - z(d))
+    .attr("r", d => z(d))
+    .style("fill", "none")
+    .attr("stroke", "black");
+
+// Add legend: segments
+svg6.selectAll(".legendSegments")
+  .data(valuesToShow)
+  .enter()
+  .append("line")
+    .attr("class", "legendSegments")
+    .attr('x1', d => xCircle + (z(d) / 2) - 3)
+    .attr('x2', xLabel + 200)
+    .attr('y1', d => h6 - 100 - z(d) * 2)
+    .attr('y2', d => h6 - 100 - z(d) * 2)
+    .attr('stroke', 'black')
+    .style('stroke-dasharray', '3,3');
+
+// Add legend: labels
+svg6.selectAll(".legendLabels")
+  .data(valuesToShow)
+  .enter()
+  .append("text")
+    .attr("class", "legendLabels")
+    .attr('x', xLabel + 201)
+    .attr('y', d => h6 - 100 - z(d) * 2)
+    .text(d => d / 1) // Ensure text is displayed as numbers
+    .style("font-size", 15)
+    .attr('alignment-baseline', 'middle');
+
+// Legend title
+svg6.append("text")
+  .attr('x', xCircle)
+  .attr("y", h6 - 100 + 30)
+  .text("Installs")
+  .attr("text-anchor", "middle");
+
+
+
+const size = 10;
+const allgroups = Array.from(new Set(Chart6_Array.map(d => d.Category)));
+
+// Update the circles based on checkbox change
+function updateCircles() {
+  const activeCategories = allgroups.filter(category => d3.select("#checkbox-" + category).property("checked"));
+
+  // Hide circles not in activeCategories
+  svg6.selectAll("circle.bubbles")
+    .style("display", d => (activeCategories.includes(d.Category) ? null : "none"));
+
+  // Hide legend elements if corresponding circles are hidden
+  svg6.selectAll(".legendCircles")
+    .style("display", d => {
+      const installs = d3.select(this).datum();
+      return (activeCategories.some(cat => z(installs) === z(cat))) ? null : "none";
+    });
+  
+  svg6.selectAll(".legendSegments")
+    .style("display", d => {
+      const installs = d3.select(this).datum();
+      return (activeCategories.some(cat => z(installs) === z(cat))) ? null : "none";
+    });
+  
+  svg6.selectAll(".legendLabels")
+    .style("display", d => {
+      const installs = d3.select(this).datum();
+      return (activeCategories.some(cat => z(installs) === z(cat))) ? null : "none";
+    });
+}
+
+// Create checkboxes for each category
+const legendContainer = d3.select("#legend")
+  .selectAll("div")
+  .data(allgroups)
+  .enter()
+  .append("div")
+    .style("display", "flex")
+    .style("align-items", "center");
+
+legendContainer.append("input")
+  .attr("type", "checkbox")
+  .attr("id", d => "checkbox-" + d)
+  .attr("checked", true)
+  .on("change", function(event, d) {
+    updateCircles(); // Call updateCircles on checkbox change
+  });
+
+legendContainer.append("label")
+  .attr("for", d => "checkbox-" + d)
+  .text(d => d)
+  .style("margin-left", "8px")
+  .style("color", d => myColor(d));
+
+// Select All button
+d3.select("#legend")
+  .append("div")
+  .attr("class", "legend-control")
+  .append("button")
+  .text("Select All")
+  .on("click", function() {
+    legendContainer.selectAll("input[type=checkbox]")
+      .property("checked", true);
+    updateCircles(); // Call updateCircles after selecting all
+  });
+
+// Clear All button
+d3.select("#legend")
+  .append("div")
+  .attr("class", "legend-control")
+  .append("button")
+  .text("Clear All")
+  .on("click", function() {
+    legendContainer.selectAll("input[type=checkbox]")
+      .property("checked", false);
+    updateCircles(); // Call updateCircles after clearing all
+  });
+
+// Call updateCircles initially
+updateCircles();
+
+
+
+svg6.selectAll("myrect")
+  .data(allgroups)
+  .join("circle")
+    .attr("cx", 655)
+    .attr("cy", (d, i) => 4 + i * (size + 5))
+    .attr("r", 6)
+    .style("fill", d => myColor(d))
+    .on("mouseover", highlight)
+    .on("mouseleave", noHighlight);
+
+// Add labels beside legend dots
+svg6.selectAll("mylabels")
+  .data(allgroups)
+  .enter()
+  .append("text")
+    .attr("x", 655 + size * .8)
+    .attr("y", (d, i) => i * (size + 5) + (size / 2))
+    .style("fill", d => myColor(d))
+    .text(d => d)
+    .attr("text-anchor", "left")
+    .style("font-size", 13)
+    .style("alignment-baseline", "middle")
+    .on("mouseover", highlight)
+    .on("mouseleave", noHighlight);
 
 
 
