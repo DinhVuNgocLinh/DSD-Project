@@ -638,12 +638,12 @@ svg4.selectAll("rect")
 
 
 
-
 const groupedData_Rating_Installs = newData.reduce((acc, obj) => {
-  const { Rating, Installs } = obj;
+  const { Category, Rating, Installs } = obj;
   if (!acc[Rating]) {
-    acc[Rating] = { Rating, Installs: 0 };
+    acc[Rating] = { Category: [], Rating, Installs: 0 };
   }
+  acc[Rating].Category.push(Category); // Collect all categories for the rating
   acc[Rating].Installs += Installs;
 
   return acc;
@@ -653,7 +653,7 @@ console.log(groupedData_Rating_Installs);
 
 // Convert the object into an array of key-value pairs and sort it by Rating
 let ratingInstalls = Object.entries(groupedData_Rating_Installs)
-  .map(([rating, data]) => [parseFloat(rating), data.Installs])
+  .map(([rating, data]) => [parseFloat(rating), data.Installs, data.Category.join(", ")])
   .sort((a, b) => a[0] - b[0]);
 
 const margin5 = { top: 150, right: 150, bottom: 60, left: 100 };
@@ -711,8 +711,8 @@ svg5
     .x(function(d) { return xScale5(d[0]); })
     .y(function(d) { return yScale5(d[1]); })
   );
-  //Title
-  svg5.append("text")
+// Title
+svg5.append("text")
   .attr("x", (w5 / 2))
   .attr("y", 0 - (margin5.top / 9))
   .attr("text-anchor", "middle")
@@ -741,23 +741,32 @@ function mousemove(event) {
   // recover coordinate we need
   const x0 = xScale5.invert(d3.pointer(event)[0]);
   const i = bisect(ratingInstalls, x0, 1);
-  const selectedData = ratingInstalls[i];
+  const d0 = ratingInstalls[i - 1];
+  const d1 = ratingInstalls[i];
+  const selectedData = (x0 - d0[0] > d1[0] - x0) ? d1 : d0;
+
   focus
     .attr("cx", xScale5(selectedData[0]))
     .attr("cy", yScale5(selectedData[1]));
+  
   focusText
     .html(null)
     .attr("x", xScale5(selectedData[0]) + 15)
     .attr("y", yScale5(selectedData[1]))
     .append('tspan')
       .attr('x', xScale5(selectedData[0]) + 15)
-      .attr('dy', '1.2em')
+      .attr('dy', '0.35em')
       .text("Rating: " + selectedData[0])
     .append('tspan')
       .attr('x', xScale5(selectedData[0]) + 15)
       .attr('dy', '1.2em')
-      .text("Installs: " + selectedData[1]);
+      .text("Installs: " + selectedData[1])
+    .append('tspan')
+      .attr('x', xScale5(selectedData[0]) + 15)
+      .attr('dy', '1.2em')
+      .text("Category: " + selectedData[2]);
 }
+
 
 function mouseout() {
   focus.style("opacity", 0);
