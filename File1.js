@@ -260,7 +260,7 @@ const newData = dataArray.map(obj => ({
       .style("font-size", "20px")
       .style("font-weight", "bold")
       .style("fill","black")
-      .text("Title of this chart");
+      .text("Sum of Installs and Average of Price by Category");
 
 
       document.getElementById("block1").innerHTML = `Summ of the Install: ${AllInstall}`;
@@ -331,7 +331,7 @@ const newData = dataArray.map(obj => ({
           tooltip.transition()
               .duration(200)
               .style("opacity", .9);
-          tooltip.html("Application: " + d[0] + "<br/>Installs: " + d[1])
+          tooltip.html("Application: " + "<br/>Installs: " + d[1])
               .style("left", (event.pageX) + "px")
               .style("top", (event.pageY - 28) + "px")
         })
@@ -348,7 +348,7 @@ const newData = dataArray.map(obj => ({
         .style("font-size", "20px")
         .style("font-weight", "bold")
         .style("fill","black")
-        .text("Title of this chart");
+        .text("Top 10 most installed app");
 
 
         //chart3
@@ -719,7 +719,7 @@ svg5
   .style("font-size", "20px")
   .style("font-weight", "bold")
   .style("fill","black")
-  .text("Title of this chart");
+  .text("Sum of install by rating");
 
 // Create a rect on top of the svg area: this rectangle recovers mouse position
 svg5
