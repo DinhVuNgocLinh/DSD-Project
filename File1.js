@@ -252,15 +252,15 @@ const newData = dataArray.map(obj => ({
           // Hide tooltip on mouseout
           d3.select(".tooltip").style("opacity", 0);
       });
-      // //Title
-      // svg.append("text")
-      // .attr("x", (w / 2))
-      // .attr("y", 0 - (margin.top / 9))
-      // .attr("text-anchor", "middle")
-      // .style("font-size", "20px")
-      // .style("font-weight", "bold")
-      // .style("fill","black")
-      // .text("Title of this chart");
+      //Title
+      svg.append("text")
+      .attr("x", (w / 2))
+      .attr("y", 0 - (margin.top / 3))
+      .attr("text-anchor", "middle")
+      .style("font-size", "20px")
+      .style("font-weight", "bold")
+      .style("fill","black")
+      .text("Title of this chart");
 
 
       document.getElementById("block1").innerHTML = `Summ of the Install: ${AllInstall}`;
@@ -570,8 +570,65 @@ svg4.selectAll("rect")
       .duration(500)
       .style("opacity", 0);
   });
+  
+// currentData = averageRatingArray.slice(0,n);
+// // Select All button
+// d3.selectAll("button")
+//   .on("click", function() {
+//     let id = d3.select(this).attr("id");
+//     if (id == "add") {
+//         if (currentData.length < averageRatingArray.length) {
+//                 currentData.push(Data[currentData.length]);
+//               }
+//     } else if (id == "remove"){
+//       if (
+//         currentData.length != 0
+//         ) {
+//           currentData.pop();
+//         }
+//         else {
+//           currentData = Data.slice(0, 20);
+//         }
+//         xScale4.domain([0, d3.max(currentData, function(d){
+//           return d[1].AverageRating;
+//         }),
+//         ]);
+//         yScale4.domain(currentData.map(function (d) {return d[1].Category}));
 
 
+//         let bars =svg4.selectAll("rect").data(currentData);
+//         bars.enter()
+//         .append("rect")
+//         .attr("x", 0)
+//         .attr("y", (d, i) => yScale4(d[1].Category))
+//         .attr("width", d => xScale4(d[1].AverageRating) - 30)
+//         .attr("height", yScale4.bandwidth())
+//         .attr("fill", function (d){
+//           return "rgb(0, " + d[1].AverageRating + ",0)";
+//         })
+//         .merge(bars)
+//         .transition()
+//         .delay(200) //1,000 ms or 1 second // tgian bat dau transition
+//         .duration(200) // tIME duration FOR CHANGE TO
+//         .ease(d3.easeLinear)
+//         .attr("x", 0)
+//         .attr("y", function (d) {
+//           return yScale(d[1].Category);})
+//         .attr("width", function (d) {return xScale(d[1].AverageRating);})
+//         .attr("height", yScale.bandwidth());
+        
+//         bars.exit().transition().duration(500).attr("y", h4).remove();
+
+//         let label1 = svg.selectAll(".attr1").data(currentData);
+//         // before merge() is starting point
+//         label1
+//           .enter()
+//           .append("text")
+//           .text(function (d) {
+//             return d[1].Category;
+//           })
+//     }
+//   });
 
 
 
@@ -706,7 +763,6 @@ function mouseout() {
   focus.style("opacity", 0);
   focusText.style("opacity", 0);
 }
-
 
 
 

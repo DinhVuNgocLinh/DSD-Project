@@ -98,9 +98,9 @@ rect {
   position: relative;
   width: 200px;
   height: 200px;
-  background-color: bisque;
+  background-color: rgb(234, 221, 157);
   padding: 10px;
-  left: 1000px; /* Move right 30px */
+  left: 1400px; /* Move right 30px */
 
 }
 
@@ -109,9 +109,9 @@ rect {
 
   width: 210px;
   height: 200px;
-  background-color:beige;
+  background-color:rgb(250, 237, 170);
   padding: 10px;
-  left: 1250px;
+  left: 1650px;
   top: -220px /* Move right 30px */
   
 
@@ -177,7 +177,7 @@ rect {
 <body>
   <div id ="highlight">
     <h1> 
-      Google Play Application Dashbroad 
+      Google Play Application visualization
     </h1>
   </div>
  
@@ -185,21 +185,30 @@ rect {
 
   <input type="file" onchange="handleFileSelect(event)">
   <div id = "container1"> 
-    <div id="block1" style="font-size: 24px;"></div>
+    <div id="block1" style="font-size: 25px;"></div>
 
 </div>
 <div id ="container2"> 
-  <div id="block2" style="font-size: 24px;"></div>
+  <div id="block2" style="font-size: 25px;"></div>
 
 </div>
   <div id="chart"></div>
   <div class="tooltip"></div>
-  <div id="chart1" class="svg-container"></div>
+  <div id="chart1"></div>
   <div id="chart2" ></div>
   <div id="chart3"></div>
-  <div id="chart4"class="svg-container"></div>
+  <div id="chart4"></div>
+  <!-- <div class = "task-controls">
+    <button id="add">Add </button>
+    <button id = "remove">Remove  </button>
+    
+    <select id = "sort-select">   
+        <option value="Descending"> Descending </option>
+        <option value="Ascending"> Ascending </option>
+    </select>
+</div> -->
   <div id="chart5"></div>
-  <div id="chart6"class="svg-container"></div>
+  <div id="chart6"></div>
   <div id="legend"></div>
 
 
