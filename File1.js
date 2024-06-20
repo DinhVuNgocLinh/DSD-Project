@@ -186,7 +186,7 @@ const newData = dataArray.map(obj => ({
 
       svg.append("g")
         .call(zAxis)
-        .attr("transform", `translate(1000, 0)`)
+        .attr("transform", `translate(1025, 0)`)
 
 
       
