@@ -21,6 +21,9 @@ download.
 - Cleaning data: remove errors, handling missing values, remove duplicates.
 - Visualizing data: use tools(Power BI) and programming languages(Python, R) to visualize data.
 - Analyzing data: summarizing data, identifying trends, recommending based on insights.
+- Dashboard created using Power BI:
+![image](https://github.com/DinhVuNgocLinh/DSDV-Project/assets/125757646/ba05a43b-ac3f-4152-b47f-64698e5843b3)
+
 # IV. Charts and Interactive features
 #### 1. Charts
 - Combination Chart: Sum of Installs and Average of Price by Category
